@@ -1,32 +1,45 @@
 #include "Shader.h"
 
-Shader::Shader(const char* shaderSource) {
+Shader::Shader() {
 	// Create the program
 	program = glCreateProgram();
 
-	// Create and compile the shader
-	shader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(shader, 1, &shaderSource, 0);
-	glCompileShader(shader);
+	const char* vshader = "attribute vec4 vPosition; void main() { gl_Position = vPosition; }";
 
-	GLint length, result;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
-	if (result == GL_FALSE) {
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
-		GLchar* log = new GLchar[length + 1];
-		glGetShaderInfoLog(shader, length, &result, log);
-		std::string logStr(log);
-		delete log;
-		throw ShaderCompilationException(logStr);
-	}
-
-	glAttachShader(program, shader);
-	glLinkProgram(program);
+	// Create and compile the vertex shader
+	vertexShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(vertexShader, 1, &vshader, 0);
+	glCompileShader(vertexShader);
 
 	// Create Framebuffer
 	GLuint fbo = 0;
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+}
+
+void Shader::SetShader(const char* shaderSource) {
+	//TODO Detach current shader (if anything)
+
+	// Create and compile the fragment shader
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &shaderSource, 0);
+	glCompileShader(fragmentShader);
+
+	GLint length, result;
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &result);
+	if (result == GL_FALSE) {
+		glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &length);
+		GLchar* log = new GLchar[length + 1];
+		glGetShaderInfoLog(fragmentShader, length, &result, log);
+		std::string logStr(log);
+		delete log;
+		throw ShaderCompilationException(logStr);
+	}
+
+	glAttachShader(program, vertexShader);
+	glAttachShader(program, fragmentShader);
+	glLinkProgram(program);
+
 }
 
 void Shader::Render(GLuint texture, int w, int h, int scale /* = 1 */) {

@@ -7,13 +7,14 @@
 
 class Shader {
 private:
-	GLint program, shader, fbo;
+	GLint program, vertexShader, fragmentShader, fbo;
 
 public:
 	std::map<std::string, GLfloat> uniforms1f;
 	std::map<std::string, GLint  > uniforms1i;
 
-	Shader(const char* shaderSource);
+	Shader();
+	void SetShader(const char* shaderSource);
 	void Render(GLuint texture, int w, int h, int scale = 1);
 };
 
