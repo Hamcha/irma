@@ -104,7 +104,6 @@ int main(int argc, char *argv[]) {
 		glTexCoord2f(0, 1);
 		glVertex3f(-1, 1, 0);
 		glEnd();
-		glFlush();
 
 		SDL_GL_SwapWindow(window);
 	}

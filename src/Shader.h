@@ -8,6 +8,7 @@
 class Shader {
 private:
 	GLint program, vertexShader, fragmentShader, fbo;
+	GLuint rb;
 
 public:
 	std::map<std::string, GLfloat> uniforms1f;

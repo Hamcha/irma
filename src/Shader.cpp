@@ -11,10 +11,10 @@ Shader::Shader() {
 	glShaderSource(vertexShader, 1, &vshader, 0);
 	glCompileShader(vertexShader);
 
-	// Create Framebuffer
+	// Create Framebuffer and Renderbuffer
 	GLuint fbo = 0;
 	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glGenRenderbuffers(1, &rb);
 }
 
 void Shader::SetShader(const char* shaderSource) {
@@ -43,6 +43,12 @@ void Shader::SetShader(const char* shaderSource) {
 }
 
 void Shader::Render(GLuint texture, int w, int h, int scale /* = 1 */) {
+	// Bind framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rb);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, w, h);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb);
+
 	// Bind and format the given render texture
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
@@ -71,8 +77,9 @@ void Shader::Render(GLuint texture, int w, int h, int scale /* = 1 */) {
 	// Disable shader
 	glUseProgram(0);
 
-	// De-bind the fbo
+	// De-bind FBO, Render buffer and texture
 	glPopAttrib();
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindRenderbuffer(GL_RENDERBUFFER_EXT, 0);
 }
