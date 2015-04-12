@@ -15,14 +15,14 @@ private:
 	std::map<std::string, GLint> uniformCache;
 
 protected:
-	GLint GetUniform(std::string name);
+	GLint GetUniform(const std::string name);
 
 public:
 	std::map<std::string, BaseUniform*> uniforms;
 
 	Shader();
 	void SetShader(const char* shaderSource);
-	void Render(GLuint texture, int w, int h, int scale = 1);
+	void Render(const GLuint texture, const int w, const int h, const int scale = 1);
 	void Draw();
 };
 

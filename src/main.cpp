@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Set default uniforms
-	Uniform<GLVec2i> resolution(GLVec2i{ w, h });
+	Uniform<GLVec2f> resolution(GLVec2f{ w, h });
 	userShader.uniforms["uResolution"] = &resolution;
 
 	SDL_Event event;

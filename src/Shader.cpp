@@ -56,7 +56,7 @@ void Shader::SetShader(const char* shaderSource) {
 	vertAttrib = glGetAttribLocation(program, "LVertexPos2D");
 }
 
-void Shader::Render(GLuint texture, int w, int h, int scale /* = 1 */) {
+void Shader::Render(const GLuint texture, const int w, const int h, const int scale /* = 1 */) {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rb);
@@ -101,15 +101,15 @@ void Shader::Draw() {
 	glUseProgram(0);
 }
 
-GLint Shader::GetUniform(std::string name) {
+GLint Shader::GetUniform(const std::string name) {
 	if (uniformCache.find(name) == uniformCache.end()) {
 		uniformCache[name] = glGetUniformLocation(program, name.c_str());
 	}
 	return uniformCache[name];
 }
 
-ShaderCompilationException::ShaderCompilationException(std::string what) { reason = what; }
+ShaderCompilationException::ShaderCompilationException(const std::string what) { reason = what; }
 std::string ShaderCompilationException::what() { return reason; }
 
-ShaderLinkException::ShaderLinkException(std::string what) { reason = what; }
+ShaderLinkException::ShaderLinkException(const std::string what) { reason = what; }
 std::string ShaderLinkException::what() { return reason; }
