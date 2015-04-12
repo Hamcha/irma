@@ -57,15 +57,10 @@ void Player::LoadDirectory(const std::string dirname) {
 }
 
 void Player::MakeUniforms() {
-	Uniform<GLVec2f>* resolution = new Uniform<GLVec2f>(GLVec2f{ width, height });
-	userShader.uniforms["uResolution"] = resolution;
-	appShader.uniforms["uResolution"] = resolution;
-
-	Uniform<GLVec2i>* mouseCoord = new Uniform<GLVec2i>(GLVec2i{ 0, 0 });
-	userShader.uniforms["uMouseCoord"] = mouseCoord;
-
-	Uniform<GLfloat>* time = new Uniform<GLfloat>(0);
-	userShader.uniforms["uTime"] = time;
+	userShader.uniforms["uResolution"] = new Uniform<GLVec2f>(GLVec2f{ width, height });
+	appShader.uniforms["uResolution"] = new Uniform<GLVec2f>(GLVec2f{ width, height });
+	userShader.uniforms["uMouseCoord"] = new Uniform<GLVec2i>(GLVec2i{ 0, 0 });
+	userShader.uniforms["uTime"] = new Uniform<GLfloat>(0);
 
 	Uniform<Sampler2D>* renderTexture = new Uniform<Sampler2D>(texture);
 	renderTexture->texid = 0;
@@ -90,5 +85,7 @@ void Player::Loop() {
 }
 
 void Player::Dispose() {
+	userShader.Dispose();
+	appShader.Dispose();
 	SDL_GL_DeleteContext(context);
 }
