@@ -1,5 +1,5 @@
 #include "Player.h"
-#include <fstream>
+#include "FileUtils.h"
 
 const GLchar appShaderSrc[] =
 {
@@ -14,8 +14,16 @@ const GLchar appShaderSrc[] =
 	"}"
 };
 
-void Player::InitContext(SDL_Window* win, const int w, const int h) {
-	SDL_GLContext context = SDL_GL_CreateContext(win);
+void Player::Init(const int w, const int h) {
+	width = w;
+	height = h;
+
+	window = SDL_CreateWindow("Player", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	if (window == NULL) {
+		throw new PlayerException(std::string(SDL_GetError()));
+	}
+
+	SDL_GLContext context = SDL_GL_CreateContext(window);
 	if (context == NULL) {
 		throw new PlayerException(std::string(SDL_GetError()));
 	}
@@ -33,26 +41,12 @@ void Player::InitContext(SDL_Window* win, const int w, const int h) {
 	// Generate render texture
 	glGenTextures(1, &texture);
 
-	width = w;
-	height = h;
-	window = win;
-
 	userShader.Init();
 	appShader.Init();
 	appShader.SetShader(appShaderSrc);
 }
 
-void Player::LoadDirectory(const std::string dirname) {
-	// Read shader file
-	std::ifstream shaderFile(dirname + "/shader.glsl"); //TODO Check for existence
-	std::string shaderSrc = "", line;
-	while (!shaderFile.eof()) {
-		std::getline(shaderFile, line);
-		shaderSrc += line + "\n";
-	}
-	shaderFile.close();
-
-	// Create shaders
+void Player::SetShader(const std::string shaderSrc) {
 	userShader.SetShader(shaderSrc.c_str());
 }
 
@@ -88,4 +82,5 @@ void Player::Dispose() {
 	userShader.Dispose();
 	appShader.Dispose();
 	SDL_GL_DeleteContext(context);
+	SDL_DestroyWindow(window);
 }

@@ -1,0 +1,11 @@
+name
+    Example project
+
+description
+    An example project
+
+scripts
+    movement.lua
+
+shaders
+    shader.glsl

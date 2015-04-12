@@ -78,15 +78,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\FileUtils.cpp" />
     <ClCompile Include="src\GLUtils.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Project.cpp" />
     <ClCompile Include="src\Quad.cpp" />
     <ClCompile Include="src\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\FileUtils.h" />
     <ClInclude Include="src\GLUtils.h" />
     <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\Project.h" />
     <ClInclude Include="src\Quad.h" />
     <ClInclude Include="src\Shader.h" />
   </ItemGroup>

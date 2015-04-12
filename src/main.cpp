@@ -1,4 +1,4 @@
-#include "Player.h"
+#include "Project.h"
 
 int main(int argc, char *argv[]) {
 	// Player properties
@@ -16,32 +16,20 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	SDL_Window* window = SDL_CreateWindow("Irma", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-	if (window == NULL) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error opening window", SDL_GetError(), NULL);
-		SDL_Quit();
-		exit(1);
-	}
-
-	Player player;
+	Project project = Project::FromDirectory("projects/example");
+	Player* player;
 
 	try {
-		player.InitContext(window, w, h);
+		player = project.CreatePlayer(w, h);
 	} catch (const PlayerException& e) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Player initialization error", e.what(), window);
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Player initialization error", e.what(), NULL);
 		SDL_Quit();
 		return 1;
-	}
-
-	try {
-		player.LoadDirectory("projects/example");
 	} catch (const ShaderException& e) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, e.type == SHADER_COMPILE_FAILURE ? "Compilation error" : "Link error", e.what(), window);
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, e.type == SHADER_COMPILE_FAILURE ? "Compilation error" : "Link error", e.what(), NULL);
 		SDL_Quit();
 		return 1;
 	}
-
-	player.MakeUniforms();
 
 	SDL_Event event;
 	bool running = true;
@@ -54,11 +42,10 @@ int main(int argc, char *argv[]) {
 			}
 		}
 
-		player.Loop();
+		player->Loop();
 	}
 
-	player.Dispose();
-	SDL_DestroyWindow(window);
+	project.Dispose();
 	SDL_Quit();
 	return 0;
 }

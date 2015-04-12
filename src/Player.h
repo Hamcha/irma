@@ -19,8 +19,8 @@ protected:
 public:
 	Shader userShader, appShader;
 
-	void InitContext(SDL_Window* win, const int w, const int h);
-	void LoadDirectory(const std::string dirname);
+	void Init(const int w, const int h);
+	void SetShader(const std::string shaderSrc);
 	void MakeUniforms();
 	void Loop();
 	void Dispose();
