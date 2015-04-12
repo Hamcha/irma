@@ -101,6 +101,12 @@ int main(int argc, char *argv[]) {
 	userShader.uniforms["uResolution"] = &resolution;
 	appShader.uniforms["uResolution"] = &resolution;
 
+	Uniform<GLVec2i> mouseCoord(GLVec2i{ 0, 0 });
+	userShader.uniforms["uMouseCoord"] = &mouseCoord;
+
+	Uniform<GLfloat> time(0);
+	userShader.uniforms["uTime"] = &time;
+
 	Uniform<Sampler2D> renderTexture(texture);
 	renderTexture.texid = 0;
 	appShader.uniforms["texture"] = &renderTexture;
@@ -115,6 +121,10 @@ int main(int argc, char *argv[]) {
 				break;
 			}
 		}
+
+		// Get input for uniforms
+		SDL_GetMouseState(&mouseCoord.value.x, &mouseCoord.value.y);
+		time.value = SDL_GetTicks() / 1000.f;
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
