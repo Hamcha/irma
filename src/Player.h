@@ -19,7 +19,7 @@ protected:
 public:
 	Shader userShader, appShader;
 
-	void Init(const int w, const int h);
+	void Init(const int w, const int h, const char* name);
 	void SetShader(const std::string shaderSrc);
 	void MakeUniforms();
 	void Loop();

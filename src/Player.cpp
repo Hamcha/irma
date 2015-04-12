@@ -14,11 +14,11 @@ const GLchar appShaderSrc[] =
 	"}"
 };
 
-void Player::Init(const int w, const int h) {
+void Player::Init(const int w, const int h, const char* name) {
 	width = w;
 	height = h;
 
-	window = SDL_CreateWindow("Player", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow(name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		throw new PlayerException(std::string(SDL_GetError()));
 	}

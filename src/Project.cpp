@@ -11,6 +11,8 @@ Project::Project(const std::string dirname) {
 	projectFileData raw = readProjectFile(dirname);
 	if (raw.find("name") != raw.end() && raw["name"].size() > 0) {
 		info.name = raw["name"][0];
+	} else {
+		info.name = "Unnamed project (" + dirname + ")";
 	}
 	if (raw.find("description") != raw.end() && raw["description"].size() > 0) {
 		for (auto& line : raw["description"]) {
@@ -26,7 +28,8 @@ Project::Project(const std::string dirname) {
 }
 
 Player* Project::CreatePlayer(const int w, const int h) {
-	player.Init(w, h);
+	std::string winname = info.name + " - Player";
+	player.Init(w, h, winname.c_str());
 
 	std::string shaderCombined = LoadAllShaders();
 	player.SetShader(shaderCombined);
