@@ -2,6 +2,11 @@
 #include <fstream>
 #include "Shader.h"
 
+const GLchar appShaderSrc[] =
+{
+	"#version 140\nout vec4 LFragment; void main() { LFragment = vec4(1, 0, 1, 1);	}"
+};
+
 int main(int argc, char *argv[]) {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error initializing SDL", SDL_GetError(), NULL);
@@ -13,7 +18,7 @@ int main(int argc, char *argv[]) {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 
 	SDL_Window *window = SDL_CreateWindow("Irma", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	if (window == NULL) {
@@ -60,7 +65,6 @@ int main(int argc, char *argv[]) {
 	// Generate render texture and render quad
 	GLuint texture;
 	glGenTextures(1, &texture);
-	Quad quad;
 
 	// OpenGL Features
 	glEnable(GL_TEXTURE_2D); 
@@ -68,9 +72,13 @@ int main(int argc, char *argv[]) {
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	Shader shader;
+	Shader userShader, appShader;
 	try {
-		shader.SetShader(shaderSrc.c_str());
+		userShader.SetShader(shaderSrc.c_str());
+		appShader.SetShader(appShaderSrc);
+
+		GLVec2<GLint> resolution = { w, h };
+		userShader.uniforms["uResolution"] = Uniform<GLVec2<GLint>>(resolution);
 	} catch (ShaderCompilationException e) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Shader compilation error", e.what().c_str(), window);
 		SDL_Quit();
@@ -93,14 +101,11 @@ int main(int argc, char *argv[]) {
 		}
 
 		glClear(GL_COLOR_BUFFER_BIT);
-		// Render to texture!
-		shader.Render(texture, w, h, 1);
-		// Bind texture and draw it fullscreen (Two triangles!)
 
-		/*glBindTexture(GL_TEXTURE_2D, texture);
-		quad.Draw();
-		glBindTexture(GL_TEXTURE_2D, 0);
-		*/
+		// Render user's shader to texture
+		//userShader.Render(texture, w, h, 1);
+		userShader.Draw(w, h, 1);
+
 		SDL_GL_SwapWindow(window);
 	}
 

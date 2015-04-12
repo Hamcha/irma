@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include <functional>
 
 Shader::Shader() {
 	// Create the program
@@ -71,28 +72,40 @@ void Shader::Render(GLuint texture, int w, int h, int scale /* = 1 */) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	// Set the renderTexture as the FBO target
-	glFramebufferTexture2D(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, texture, 0);
-	GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, DrawBuffers);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 
+	// Draw on texture
+	Draw(w, h, scale);
+
+	// De-bind FBO, Render buffer and texture
+	glPopAttrib();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+}
+
+void Shader::Draw(int w, int h, int scale /* = 1 */) {
 	// Enable Shader
-	glPushAttrib(GL_VIEWPORT_BIT);
 	glUseProgram(program);
 
-	// Global uniforms
-	glUniform2f(glGetUniformLocation(program, "uResolution"), w, h);
+	// Apply uniforms
+	for (auto& item : uniforms) {
+		GLint uniformLoc = GetUniform(item.first);
+		item.second.Apply(uniformLoc);
+	}
 
 	// Render!
 	quad.Draw(vertAttrib);
 
 	// Disable shader
 	glUseProgram(0);
+}
 
-	// De-bind FBO, Render buffer and texture
-	glPopAttrib();
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glBindRenderbuffer(GL_RENDERBUFFER_EXT, 0);
+GLint Shader::GetUniform(std::string name) {
+	if (uniformCache.find(name) == uniformCache.end()) {
+		uniformCache[name] = glGetUniformLocation(program, name.c_str());
+	}
+	return uniformCache[name];
 }
 
 ShaderCompilationException::ShaderCompilationException(std::string what) { reason = what; }
