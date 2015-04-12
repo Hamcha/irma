@@ -1,5 +1,4 @@
 #include "Shader.h"
-#include <functional>
 
 Shader::Shader() {
 	// Create the program
