@@ -4,11 +4,13 @@
 #include <GL/glew.h>
 #include <string>
 #include <map>
+#include "Quad.h"
 
 class Shader {
 private:
-	GLint program, vertexShader, fragmentShader, fbo;
-	GLuint rb;
+	GLint program, vertexShader, fragmentShader;
+	GLuint vbo, ibo, vertAttrib, fbo, rb;
+	Quad quad;
 
 public:
 	std::map<std::string, GLfloat> uniforms1f;
@@ -24,6 +26,14 @@ private:
 	std::string reason;
 public:
 	ShaderCompilationException(std::string what);
+	std::string what();
+};
+
+class ShaderLinkException {
+private:
+	std::string reason;
+public:
+	ShaderLinkException(std::string what);
 	std::string what();
 };
 

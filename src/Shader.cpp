@@ -4,15 +4,18 @@ Shader::Shader() {
 	// Create the program
 	program = glCreateProgram();
 
-	const char* vshader = "attribute vec4 vPosition; void main() { gl_Position = vPosition; }";
+	const GLchar* vshader[] =
+	{
+		"#version 140\nin vec2 LVertexPos2D; void main() { gl_Position = vec4( LVertexPos2D.x, LVertexPos2D.y, 0, 1 ); }"
+	};
 
 	// Create and compile the vertex shader
-	vertexShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(vertexShader, 1, &vshader, 0);
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, vshader, NULL);
 	glCompileShader(vertexShader);
+	glAttachShader(program, vertexShader);
 
-	// Create Framebuffer and Renderbuffer
-	GLuint fbo = 0;
+	// Create Frame buffer and Render buffer
 	glGenFramebuffers(1, &fbo);
 	glGenRenderbuffers(1, &rb);
 }
@@ -22,7 +25,7 @@ void Shader::SetShader(const char* shaderSource) {
 
 	// Create and compile the fragment shader
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &shaderSource, 0);
+	glShaderSource(fragmentShader, 1, &shaderSource, NULL);
 	glCompileShader(fragmentShader);
 
 	GLint length, result;
@@ -36,22 +39,32 @@ void Shader::SetShader(const char* shaderSource) {
 		throw ShaderCompilationException(logStr);
 	}
 
-	glAttachShader(program, vertexShader);
 	glAttachShader(program, fragmentShader);
 	glLinkProgram(program);
 
+	glGetShaderiv(program, GL_LINK_STATUS, &result);
+	if (result == GL_FALSE) {
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
+		GLchar* log = new GLchar[length + 1];
+		glGetProgramInfoLog(program, length, &result, log);
+		std::string logStr(log);
+		delete log;
+		throw ShaderLinkException(logStr);
+	}
+
+	vertAttrib = glGetAttribLocation(program, "LVertexPos2D");
 }
 
 void Shader::Render(GLuint texture, int w, int h, int scale /* = 1 */) {
 	// Bind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rb);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, w, h);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, w / scale, h / scale);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb);
 
 	// Bind and format the given render texture
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w / scale, h / scale, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
 	// Filtering!
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -62,17 +75,15 @@ void Shader::Render(GLuint texture, int w, int h, int scale /* = 1 */) {
 	GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, DrawBuffers);
 
-	// Render!
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	// Enable Shader
 	glPushAttrib(GL_VIEWPORT_BIT);
-	// Use the shader
 	glUseProgram(program);
 
 	// Global uniforms
-	glUniform2f(glGetUniformLocation(program, "resolution"), w, h);
+	glUniform2f(glGetUniformLocation(program, "uResolution"), w, h);
 
-	glViewport(0, 0, w, h); // Viewport
-	glRects(-1, -1, 1, 1);  // Main Rect
+	// Render!
+	quad.Draw(vertAttrib);
 
 	// Disable shader
 	glUseProgram(0);
@@ -84,10 +95,8 @@ void Shader::Render(GLuint texture, int w, int h, int scale /* = 1 */) {
 	glBindRenderbuffer(GL_RENDERBUFFER_EXT, 0);
 }
 
-ShaderCompilationException::ShaderCompilationException(std::string what) {
-	reason = what;
-}
+ShaderCompilationException::ShaderCompilationException(std::string what) { reason = what; }
+std::string ShaderCompilationException::what() { return reason; }
 
-std::string ShaderCompilationException::what() {
-	return reason;
-}
+ShaderLinkException::ShaderLinkException(std::string what) { reason = what; }
+std::string ShaderLinkException::what() { return reason; }
