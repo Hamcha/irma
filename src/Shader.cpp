@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-Shader::Shader() {
+void Shader::Init() {
 	// Create the program
 	program = glCreateProgram();
 
@@ -18,6 +18,8 @@ Shader::Shader() {
 	// Create Frame buffer and Render buffer
 	glGenFramebuffers(1, &fbo);
 	glGenRenderbuffers(1, &rb);
+
+	quad.Init();
 }
 
 void Shader::SetShader(const char* shaderSource) {
@@ -36,7 +38,7 @@ void Shader::SetShader(const char* shaderSource) {
 		glGetShaderInfoLog(fragmentShader, length, &result, log);
 		std::string logStr(log);
 		delete log;
-		throw ShaderCompilationException(logStr);
+		throw ShaderException(SHADER_COMPILE_FAILURE, logStr);
 	}
 
 	glAttachShader(program, fragmentShader);
@@ -49,7 +51,7 @@ void Shader::SetShader(const char* shaderSource) {
 		glGetProgramInfoLog(program, length, &result, log);
 		std::string logStr(log);
 		delete log;
-		throw ShaderLinkException(logStr);
+		throw ShaderException(PROGRAM_LINK_FAILURE, logStr);
 	}
 
 	vertAttrib = glGetAttribLocation(program, "LVertexPos2D");
@@ -106,9 +108,3 @@ GLint Shader::GetUniform(const std::string name) {
 	}
 	return uniformCache[name];
 }
-
-ShaderCompilationException::ShaderCompilationException(const std::string what) { reason = what; }
-std::string ShaderCompilationException::what() { return reason; }
-
-ShaderLinkException::ShaderLinkException(const std::string what) { reason = what; }
-std::string ShaderLinkException::what() { return reason; }

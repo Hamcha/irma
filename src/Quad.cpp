@@ -1,6 +1,6 @@
 #include "Quad.h"
 
-Quad::Quad(const float x /* = 0 */, const float y /* = 0 */, const float w /* = 1 */, const float h /* = 1 */) {
+void Quad::Init(const float x /* = 0 */, const float y /* = 0 */, const float w /* = 1 */, const float h /* = 1 */) {
 	// Create VBO and IBO
 	GLfloat vertexData[] = { -w+x, -h+y, w+x, -h+y, w+x, h+y, -w+x, h+y };
 	const GLuint indexData[] = { 0, 1, 2, 3 };
