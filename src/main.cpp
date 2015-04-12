@@ -17,6 +17,8 @@ const GLchar appShaderSrc[] =
 
 
 int main(int argc, char *argv[]) {
+	const int w = 800, h = 600;
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error initializing SDL", SDL_GetError(), NULL);
 		SDL_Quit();
@@ -29,7 +31,7 @@ int main(int argc, char *argv[]) {
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 
-	SDL_Window *window = SDL_CreateWindow("Irma", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	SDL_Window *window = SDL_CreateWindow("Irma", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error opening window", SDL_GetError(), NULL);
 		SDL_Quit();
@@ -53,12 +55,6 @@ int main(int argc, char *argv[]) {
 	}
 	SDL_GL_SetSwapInterval(1);
 
-	// Viewport and projection
-	GLint m_viewport[4];
-	int w, h;
-	glGetIntegerv(GL_VIEWPORT, m_viewport);
-	w = m_viewport[2];
-	h = m_viewport[3];
 	// Clear screen color: Black
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 	
@@ -70,12 +66,6 @@ int main(int argc, char *argv[]) {
 		shaderSrc += line + "\n";
 	}
 	shaderFile.close();
-
-	// OpenGL Features
-	glEnable(GL_TEXTURE_2D); 
-	glEnable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	// Create shaders
 	Shader userShader, appShader;
