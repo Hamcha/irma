@@ -22,7 +22,7 @@ public:
 
 	Shader();
 	void SetShader(const char* shaderSource);
-	void Render(const GLuint texture, const int w, const int h, const int scale = 1);
+	void Render(const GLuint texture, const int w, const int h);
 	void Draw();
 };
 

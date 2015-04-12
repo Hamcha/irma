@@ -15,3 +15,10 @@ void Uniform<GLVec3<GLdouble>>::Apply(GLint location) { glUniform3d(location, va
 void Uniform<GLVec4<GLint   >>::Apply(GLint location) { glUniform4i(location, value.x, value.y, value.z, value.w); }
 void Uniform<GLVec4<GLfloat >>::Apply(GLint location) { glUniform4f(location, value.x, value.y, value.z, value.w); }
 void Uniform<GLVec4<GLdouble>>::Apply(GLint location) { glUniform4d(location, value.x, value.y, value.z, value.w); }
+
+void Uniform<Sampler2D>::Apply(GLint location) { 
+	glActiveTexture(GL_TEXTURE0 + texid);
+	glBindTexture(GL_TEXTURE_2D, value);
+	glBindSampler(texid, samplerid);
+	glUniform1i(location, texid); 
+}

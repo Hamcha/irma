@@ -13,6 +13,7 @@ typedef GLVec2<GLdouble> GLVec2d;
 typedef GLVec3<GLint   > GLVec3i;
 typedef GLVec3<GLfloat > GLVec3f;
 typedef GLVec3<GLdouble> GLVec3d;
+typedef GLuint           Sampler2D;
 
 class BaseUniform {
 public:
@@ -25,6 +26,8 @@ template<typename T>
 class Uniform : public BaseUniform {
 public:
 	T value;
+	GLuint texid, samplerid; // Used by samplers and textures
+
 	Uniform() {}
 	Uniform(T _val) { value = _val; }
 	void Apply(GLint location);

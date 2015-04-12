@@ -4,7 +4,15 @@
 
 const GLchar appShaderSrc[] =
 {
-	"#version 140\nout vec4 LFragment; void main() { LFragment = vec4(1, 0, 1, 1);	}"
+	"#version 140\n"
+	"out vec4 LFragment;"
+	"uniform vec2 uResolution;"
+	"uniform sampler2D texture;"
+	""
+	"void main() {"
+	"	vec2 uv = gl_FragCoord.xy / uResolution.xy;"
+	"	LFragment = texture2D(texture, uv);"
+	"}"
 };
 
 
@@ -17,7 +25,7 @@ int main(int argc, char *argv[]) {
 
 	// OpenGL context attributes
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 
@@ -63,10 +71,6 @@ int main(int argc, char *argv[]) {
 	}
 	shaderFile.close();
 
-	// Generate render texture and render quad
-	GLuint texture;
-	glGenTextures(1, &texture);
-
 	// OpenGL Features
 	glEnable(GL_TEXTURE_2D); 
 	glEnable(GL_BLEND);
@@ -88,9 +92,18 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
+	// Generate render texture
+	GLuint texture;
+	glGenTextures(1, &texture);
+
 	// Set default uniforms
 	Uniform<GLVec2f> resolution(GLVec2f{ w, h });
 	userShader.uniforms["uResolution"] = &resolution;
+	appShader.uniforms["uResolution"] = &resolution;
+
+	Uniform<Sampler2D> renderTexture(texture);
+	renderTexture.texid = 0;
+	appShader.uniforms["texture"] = &renderTexture;
 
 	SDL_Event event;
 	bool running = true;
@@ -105,9 +118,9 @@ int main(int argc, char *argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// Render user's shader to texture
-		//userShader.Render(texture, w, h, 1);
-		userShader.Draw();
+		// Render shaders
+		userShader.Render(texture, w, h);
+		appShader.Draw();
 
 		SDL_GL_SwapWindow(window);
 	}
