@@ -75,7 +75,7 @@ void Shader::Render(GLuint texture, int w, int h, int scale /* = 1 */) {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 
 	// Draw on texture
-	Draw(w, h, scale);
+	Draw();
 
 	// De-bind FBO, Render buffer and texture
 	glPopAttrib();
@@ -84,14 +84,14 @@ void Shader::Render(GLuint texture, int w, int h, int scale /* = 1 */) {
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
-void Shader::Draw(int w, int h, int scale /* = 1 */) {
+void Shader::Draw() {
 	// Enable Shader
 	glUseProgram(program);
 
 	// Apply uniforms
 	for (auto& item : uniforms) {
 		GLint uniformLoc = GetUniform(item.first);
-		item.second.Apply(uniformLoc);
+		item.second->Apply(uniformLoc);
 	}
 
 	// Render!

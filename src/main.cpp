@@ -7,6 +7,7 @@ const GLchar appShaderSrc[] =
 	"#version 140\nout vec4 LFragment; void main() { LFragment = vec4(1, 0, 1, 1);	}"
 };
 
+
 int main(int argc, char *argv[]) {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error initializing SDL", SDL_GetError(), NULL);
@@ -71,14 +72,12 @@ int main(int argc, char *argv[]) {
 	glEnable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+	
+	// Create shaders
 	Shader userShader, appShader;
 	try {
 		userShader.SetShader(shaderSrc.c_str());
 		appShader.SetShader(appShaderSrc);
-
-		GLVec2<GLint> resolution = { w, h };
-		userShader.uniforms["uResolution"] = Uniform<GLVec2<GLint>>(resolution);
 	} catch (ShaderCompilationException e) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Shader compilation error", e.what().c_str(), window);
 		SDL_Quit();
@@ -88,6 +87,10 @@ int main(int argc, char *argv[]) {
 		SDL_Quit();
 		return 1;
 	}
+
+	// Set default uniforms
+	Uniform<GLVec2i> resolution(GLVec2i{ w, h });
+	userShader.uniforms["uResolution"] = &resolution;
 
 	SDL_Event event;
 	bool running = true;
@@ -104,7 +107,7 @@ int main(int argc, char *argv[]) {
 
 		// Render user's shader to texture
 		//userShader.Render(texture, w, h, 1);
-		userShader.Draw(w, h, 1);
+		userShader.Draw();
 
 		SDL_GL_SwapWindow(window);
 	}

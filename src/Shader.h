@@ -18,12 +18,12 @@ protected:
 	GLint GetUniform(std::string name);
 
 public:
-	std::map<std::string, BaseUniform> uniforms;
+	std::map<std::string, BaseUniform*> uniforms;
 
 	Shader();
 	void SetShader(const char* shaderSource);
 	void Render(GLuint texture, int w, int h, int scale = 1);
-	void Draw(int w, int h, int scale = 1);
+	void Draw();
 };
 
 class ShaderCompilationException {
