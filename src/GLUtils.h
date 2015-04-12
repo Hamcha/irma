@@ -13,6 +13,9 @@ typedef GLVec2<GLdouble> GLVec2d;
 typedef GLVec3<GLint   > GLVec3i;
 typedef GLVec3<GLfloat > GLVec3f;
 typedef GLVec3<GLdouble> GLVec3d;
+typedef GLVec4<GLint   > GLVec4i;
+typedef GLVec4<GLfloat > GLVec4f;
+typedef GLVec4<GLdouble> GLVec4d;
 typedef GLuint           Sampler2D;
 
 class BaseUniform {
