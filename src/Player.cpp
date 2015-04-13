@@ -3,14 +3,12 @@
 
 const GLchar appShaderSrc[] =
 {
-	"#version 140\n"
-	"out vec4 LFragment;"
 	"uniform vec2 uResolution;"
 	"uniform sampler2D texture;"
 	""
 	"void main() {"
 	"	vec2 uv = gl_FragCoord.xy / uResolution.xy;"
-	"	LFragment = texture2D(texture, uv);"
+	"	gl_FragColor = texture2D(texture, uv);"
 	"}"
 };
 
@@ -43,11 +41,11 @@ void Player::Init(const int w, const int h, const char* name) {
 
 	userShader.Init();
 	appShader.Init();
-	appShader.SetShader(appShaderSrc);
+	appShader.SetShader(std::string(appShaderSrc), "appShader");
 }
 
 void Player::SetShader(const std::string shaderSrc) {
-	userShader.SetShader(shaderSrc.c_str());
+	userShader.SetShader(shaderSrc, "userShader");
 }
 
 void Player::MakeUniforms() {

@@ -26,7 +26,8 @@ int main(int argc, char *argv[]) {
 		SDL_Quit();
 		return 1;
 	} catch (const ShaderException& e) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, e.type == SHADER_COMPILE_FAILURE ? "Compilation error" : "Link error", e.what(), NULL);
+		std::string errname = e.type == SHADER_COMPILE_FAILURE ? "Compilation error - " + e.name : "Link error";
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, errname.c_str(), e.what(), NULL);
 		SDL_Quit();
 		return 1;
 	}

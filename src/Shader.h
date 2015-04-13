@@ -22,7 +22,7 @@ public:
 	std::map<std::string, BaseUniform*> uniforms;
 
 	void Init();
-	void SetShader(const char* shaderSource);
+	void SetShader(const std::string shaderSource, const std::string shaderName = "UNSET");
 	void Render(const GLuint texture, const int w, const int h);
 	void Draw();
 	void Dispose();
@@ -36,7 +36,10 @@ enum ShaderExceptionType {
 class ShaderException : public std::runtime_error {
 public:
 	ShaderExceptionType type;
-	ShaderException(ShaderExceptionType _type, std::string what) : std::runtime_error(what.c_str()) { type = _type; }
+	std::string name;
+	ShaderException(ShaderExceptionType _type, std::string _name, std::string what)
+		: std::runtime_error(what.c_str())
+		{ type = _type; name = _name; }
 };
 
 #endif

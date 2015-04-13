@@ -1,18 +1,33 @@
 #include "Shader.h"
 
+const GLchar* vshader[] =
+{
+	"varying vec2 LVertexPos2D;"
+	"void main() {"
+	"	gl_Position = vec4( LVertexPos2D.x, LVertexPos2D.y, 0, 1 );"
+	"}\n"
+};
+
+
 void Shader::Init() {
 	// Create the program
 	program = glCreateProgram();
-
-	const GLchar* vshader[] =
-	{
-		"#version 140\nin vec2 LVertexPos2D; void main() { gl_Position = vec4( LVertexPos2D.x, LVertexPos2D.y, 0, 1 ); }"
-	};
 
 	// Create and compile the vertex shader
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, vshader, NULL);
 	glCompileShader(vertexShader);
+	GLint length, result;
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &result);
+	if (result == GL_FALSE) {
+		glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &length);
+		GLchar* log = new GLchar[length + 1];
+		glGetShaderInfoLog(vertexShader, length, &result, log);
+		std::string logStr(log);
+		delete log;
+		throw ShaderException(SHADER_COMPILE_FAILURE, "vertexShader", logStr);
+	}
+
 	glAttachShader(program, vertexShader);
 
 	// Create Frame buffer and Render buffer
@@ -22,12 +37,14 @@ void Shader::Init() {
 	quad.Init();
 }
 
-void Shader::SetShader(const char* shaderSource) {
+void Shader::SetShader(const std::string shaderSource, const std::string shaderName) {
 	//TODO Detach current shader (if anything)
 
 	// Create and compile the fragment shader
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &shaderSource, NULL);
+	const char* src = shaderSource.c_str();
+	const int srcLength = shaderSource.length();
+	glShaderSource(fragmentShader, 1, &src, &srcLength);
 	glCompileShader(fragmentShader);
 
 	GLint length, result;
@@ -38,7 +55,7 @@ void Shader::SetShader(const char* shaderSource) {
 		glGetShaderInfoLog(fragmentShader, length, &result, log);
 		std::string logStr(log);
 		delete log;
-		throw ShaderException(SHADER_COMPILE_FAILURE, logStr);
+		throw ShaderException(SHADER_COMPILE_FAILURE, shaderName, logStr);
 	}
 
 	glAttachShader(program, fragmentShader);
@@ -51,7 +68,7 @@ void Shader::SetShader(const char* shaderSource) {
 		glGetProgramInfoLog(program, length, &result, log);
 		std::string logStr(log);
 		delete log;
-		throw ShaderException(PROGRAM_LINK_FAILURE, logStr);
+		throw ShaderException(PROGRAM_LINK_FAILURE, "programLink", logStr);
 	}
 
 	vertAttrib = glGetAttribLocation(program, "LVertexPos2D");

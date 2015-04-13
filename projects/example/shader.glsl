@@ -1,5 +1,3 @@
-#version 140
-out vec4 LFragment;
 uniform vec2 uResolution;
 uniform ivec2 uMouseCoord;
 uniform float uTime;
@@ -13,5 +11,5 @@ void main() {
         color = vec3(0);
     }
 
-    LFragment = vec4(color, 1);
+    gl_FragColor = vec4(color, 1);
 }
