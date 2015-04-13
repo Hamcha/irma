@@ -7,7 +7,7 @@ void main() {
     vec2 m = vec2(uMouseCoord.x, uResolution.y - uMouseCoord.y);
 
     vec3 color = vec3(p, 1);
-    if (distance(m,gl_FragCoord.xy) < 10f+sin(uTime*10)*5f) {
+    if (distance(m,gl_FragCoord.xy) < 10.f+sin(uTime*10.f)*5.f) {
         color = vec3(0);
     }
 
