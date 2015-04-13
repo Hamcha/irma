@@ -1,10 +1,16 @@
+# Global project settings
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 project(irma)
-
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${irma_SOURCE_DIR}/cmake")
 
-aux_source_directory(src SRC_FILES)
-add_executable(irma ${SRC_FILES})
+# lua (Library)
+aux_source_directory(lua LUA_SRC)
+add_library(lua ${LUA_SRC})
+
+# irma (Player)
+aux_source_directory(src IRMA_SRC)
+add_executable(irma ${IRMA_SRC})
+target_link_libraries(irma lua)
 
 target_compile_features(irma PRIVATE cxx_range_for)
 
