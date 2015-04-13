@@ -23,7 +23,6 @@ public:
 
 	void LoadDirectory(const std::string dirname);
 	Player* CreatePlayer(const int w, const int h);
-	void Dispose();
 };
 
 #endif

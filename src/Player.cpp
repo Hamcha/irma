@@ -77,9 +77,7 @@ void Player::Loop() {
 	SDL_GL_SwapWindow(window);
 }
 
-void Player::Dispose() {
-	userShader.Dispose();
-	appShader.Dispose();
+Player::~Player() {
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(window);
 }

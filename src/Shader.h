@@ -21,11 +21,11 @@ protected:
 public:
 	std::map<std::string, BaseUniform*> uniforms;
 
+	~Shader();
 	void Init();
 	void SetShader(const std::string shaderSource, const std::string shaderName = "UNSET");
 	void Render(const GLuint texture, const int w, const int h);
 	void Draw();
-	void Dispose();
 };
 
 enum ShaderExceptionType {

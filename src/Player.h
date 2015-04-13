@@ -19,11 +19,11 @@ protected:
 public:
 	Shader userShader, appShader;
 
+	~Player();
 	void Init(const int w, const int h, const char* name);
 	void SetShader(const std::string shaderSrc);
 	void MakeUniforms();
 	void Loop();
-	void Dispose();
 };
 
 class PlayerException : public std::runtime_error {

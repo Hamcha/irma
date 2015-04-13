@@ -51,7 +51,3 @@ std::string Project::LoadAllShaders() {
 
 	return shaderSrc;
 }
-
-void Project::Dispose() {
-	player.Dispose();
-}

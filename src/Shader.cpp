@@ -126,7 +126,7 @@ GLint Shader::GetUniform(const std::string name) {
 	return uniformCache[name];
 }
 
-void Shader::Dispose() {
+Shader::~Shader() {
 	for (auto& item : uniforms) {
 		delete item.second;
 	}

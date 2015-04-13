@@ -48,7 +48,6 @@ int main(int argc, char *argv[]) {
 		player->Loop();
 	}
 
-	project.Dispose();
 	SDL_Quit();
 	return 0;
 }
