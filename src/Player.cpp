@@ -51,8 +51,9 @@ void Player::SetShader(const std::string shaderSrc) {
 }
 
 void Player::MakeUniforms() {
-	userShader.uniforms["uResolution"] = new Uniform<GLVec2f>(GLVec2f{ width, height });
-	appShader.uniforms["uResolution"] = new Uniform<GLVec2f>(GLVec2f{ width, height });
+	float w = width, h = height;
+	userShader.uniforms["uResolution"] = new Uniform<GLVec2f>(GLVec2f{ w, h });
+	appShader.uniforms["uResolution"] = new Uniform<GLVec2f>(GLVec2f{ w, h });
 	userShader.uniforms["uMouseCoord"] = new Uniform<GLVec2i>(GLVec2i{ 0, 0 });
 	userShader.uniforms["uTime"] = new Uniform<GLfloat>(0);
 
