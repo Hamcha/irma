@@ -5,7 +5,10 @@ description
     An example project
 
 scripts
-    movement.lua
 
 shaders
-    shader.glsl
+    uniforms.glsl
+    shapes.glsl
+    scene.glsl
+    raymarching.glsl
+    main.glsl
