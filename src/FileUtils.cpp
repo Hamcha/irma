@@ -1,8 +1,13 @@
 #include "FileUtils.h"
 #include <fstream>
 
+bool fileExists(std::string path) {
+	std::ifstream file(path);
+	return file.good();
+}
+
 std::string readFileToString(std::string path) {
-	std::ifstream file(path); //TODO Check for existence
+	std::ifstream file(path);
 	std::string out = "", line;
 	while (!file.eof()) {
 		std::getline(file, line);
