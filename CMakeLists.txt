@@ -4,8 +4,11 @@ project(irma)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${irma_SOURCE_DIR}/cmake")
 
 # irma (Player)
-aux_source_directory(src IRMA_SRC)
-add_executable(${PROJECT_NAME} ${IRMA_SRC})
+#aux_source_directory(src IRMA_SRC)
+file(GLOB IRMA_HEADERS src/*.h)
+file(GLOB IRMA_SRC src/*.cpp)
+add_executable(${PROJECT_NAME} ${IRMA_SRC} ${IRMA_HEADERS})
+set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_range_for)
 
@@ -24,3 +27,12 @@ target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARY})
 find_package(LuaJIT REQUIRED)
 include_directories(${LUAJIT_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${LUAJIT_LIBRARIES})
+
+# Remove console window on Windows
+if(MSVC)
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:WINDOWS")
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS")
+    set_target_properties(${PROJECT_NAME} PROPERTIES RELWITHDEBINFO "/SUBSYSTEM:WINDOWS")
+    set_target_properties(${PROJECT_NAME} PROPERTIES MINSIZEREL "/SUBSYSTEM:WINDOWS")
+endif(MSVC)
