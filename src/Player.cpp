@@ -18,18 +18,18 @@ void Player::Init(const int w, const int h, const char* name) {
 
 	window = SDL_CreateWindow(name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	if (window == NULL) {
-		throw new PlayerException(std::string(SDL_GetError()));
+		throw PlayerException(std::string(SDL_GetError()));
 	}
 
 	SDL_GLContext context = SDL_GL_CreateContext(window);
 	if (context == NULL) {
-		throw new PlayerException(std::string(SDL_GetError()));
+		throw PlayerException(std::string(SDL_GetError()));
 	}
 
 	glewExperimental = GL_TRUE;
 	GLenum g = glewInit();
 	if (g != GLEW_OK) {
-		throw new PlayerException(std::string((const char*) glewGetErrorString(g)));
+		throw PlayerException(std::string((const char*) glewGetErrorString(g)));
 	}
 	SDL_GL_SetSwapInterval(1);
 

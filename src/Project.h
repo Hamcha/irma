@@ -15,16 +15,13 @@ struct ProjectInfo {
 class Project {
 private:
 	std::string basepath;
-
-	Project(const std::string dirname);
 	std::string LoadAllShaders();
 
 public:
 	ProjectInfo info;
 	Player player;
 
-	static Project FromDirectory(const std::string dirname);
-
+	void LoadDirectory(const std::string dirname);
 	Player* CreatePlayer(const int w, const int h);
 	void Dispose();
 };

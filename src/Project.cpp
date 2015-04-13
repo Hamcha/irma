@@ -1,14 +1,14 @@
 #include "Project.h"
 #include "FileUtils.h"
 
-Project Project::FromDirectory(const std::string dirname) {
-	Project project(dirname);
-	return project;
-}
-
-Project::Project(const std::string dirname) {
+void Project::LoadDirectory(const std::string dirname) {
 	basepath = dirname;
+
+	if (!fileExists(dirname + "/project.txt")) {
+		throw PlayerException("Project file is missing from " + dirname);
+	}
 	projectFileData raw = readProjectFile(dirname);
+
 	if (raw.find("name") != raw.end() && raw["name"].size() > 0) {
 		info.name = raw["name"][0];
 	} else {
@@ -42,7 +42,11 @@ Player* Project::CreatePlayer(const int w, const int h) {
 std::string Project::LoadAllShaders() {
 	std::string shaderSrc = "";
 	for (auto& filename : info.shaders) {
-		shaderSrc += readFileToString(basepath + "/" + filename);
+		std::string fullname = basepath + "/" + filename;
+		if (!fileExists(fullname)) {
+			throw PlayerException("Inexistent shader file: " + fullname);
+		}
+		shaderSrc += readFileToString(fullname);
 	}
 
 	return shaderSrc;

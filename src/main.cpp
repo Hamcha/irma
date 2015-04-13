@@ -1,4 +1,5 @@
 #include "Project.h"
+#include <fstream>
 
 int main(int argc, char *argv[]) {
 	// Player properties
@@ -16,10 +17,11 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	Project project = Project::FromDirectory("projects/example");
+	Project project;
 	Player* player;
 
 	try {
+		project.LoadDirectory("projects/example");
 		player = project.CreatePlayer(w, h);
 	} catch (const PlayerException& e) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Player initialization error", e.what(), NULL);
