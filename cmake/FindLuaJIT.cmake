@@ -28,7 +28,7 @@
 # 2010 - modified for cronkite to find luajit instead of lua, as it was before.
 #
 
-FIND_PATH(LUAJIT_INCLUDE_DIR lua.h
+FIND_PATH(LUAJIT_INCLUDE_DIR luajit.h lua.hpp
   HINTS
   $ENV{LUAJIT_DIR}
   ${LUAJIT_DIR}
