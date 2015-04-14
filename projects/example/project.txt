@@ -5,10 +5,11 @@ description
     An example project
 
 scripts
+    test.lua
 
 shaders
     uniforms.glsl
-    shapes.glsl
+    functions.glsl
     scene.glsl
     raymarching.glsl
     main.glsl
