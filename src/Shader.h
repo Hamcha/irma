@@ -1,5 +1,4 @@
-#ifndef _SHADER_H
-#define _SHADER_H
+#pragma once
 
 #include <GL/glew.h>
 #include <string>
@@ -42,4 +41,3 @@ public:
 		{ type = _type; name = _name; }
 };
 
-#endif

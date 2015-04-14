@@ -1,5 +1,4 @@
-#ifndef _PROJECT_H
-#define _PROJECT_H
+#pragma once
 
 #include "Player.h"
 #include <string>
@@ -25,5 +24,3 @@ public:
 	void LoadDirectory(const std::string dirname);
 	Player* CreatePlayer(const int w, const int h);
 };
-
-#endif

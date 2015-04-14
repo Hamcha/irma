@@ -1,5 +1,4 @@
-#ifndef _LUASCRIPT_H
-#define _LUASCRIPT_H
+#pragma once
 
 #include <lua.hpp>
 #include <string>
@@ -27,5 +26,3 @@ class LuaException : public std::runtime_error {
 public:
 	LuaException(std::string what) : std::runtime_error(what.c_str()) {}
 };
-
-#endif

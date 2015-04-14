@@ -1,5 +1,4 @@
-#ifndef _PLAYER_H
-#define _PLAYER_H
+#pragma once
 
 #include <GL/glew.h>
 #include <SDL.h>
@@ -36,5 +35,3 @@ class PlayerException : public std::runtime_error {
 public:
 	PlayerException(std::string what) : std::runtime_error(what.c_str()) {}
 };
-
-#endif

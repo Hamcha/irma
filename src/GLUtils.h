@@ -1,5 +1,4 @@
-#ifndef _GLUTILS_H
-#define _GLUTILS_H
+#pragma once
 
 #include <GL/glew.h>
 
@@ -35,5 +34,3 @@ public:
 	Uniform(T _val) { value = _val; }
 	void Apply(GLint location);
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef _QUAD_H
-#define _QUAD_H
+#pragma once
 
 #include <GL/glew.h>
 
@@ -11,5 +10,3 @@ public:
 	void Draw();
 	void Draw(const GLuint vertexAttrib);
 };
-
-#endif
