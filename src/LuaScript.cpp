@@ -71,3 +71,8 @@ template<>
 std::string getResult(lua_State* state) {
     return std::string(lua_tostring(state, -1));
 }
+
+template<>
+bool getResult(lua_State* state) {
+    return lua_toboolean(state, -1) != 0;
+}
