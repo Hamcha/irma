@@ -32,6 +32,11 @@ int main(int argc, char *argv[]) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, errname.c_str(), e.what(), NULL);
 		SDL_Quit();
 		return 1;
+	} catch (const LuaException& e) {
+		std::string errname = "Lua error - " + e.file;
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, errname.c_str(), e.what(), NULL);
+		SDL_Quit();
+		return 1;
 	}
 
 	SDL_Event event;

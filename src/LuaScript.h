@@ -4,10 +4,6 @@
 #include <string>
 #include <stdexcept>
 
-typedef class LuaScript LuaScript;
-
-#include "Player.h"
-
 class LuaScript {
 private:
 	lua_State* state;
@@ -16,13 +12,16 @@ public:
 	~LuaScript();
 
 	void ExecuteFile(const std::string file);
-	void BindPlayer(Player* player);
 
 	template<typename R, typename ...T>
 	R callFunction(const std::string, const T...);
+
+	template<typename T>
+	void bindFunction(const std::string, T* function);
 };
 
 class LuaException : public std::runtime_error {
 public:
-	LuaException(std::string what) : std::runtime_error(what.c_str()) {}
+	std::string file;
+	LuaException(std::string filename, std::string what) : std::runtime_error(what.c_str()) { file = filename; }
 };

@@ -1,7 +1,7 @@
 #include "LuaScript.h"
+#include <functional>
 
-template<typename T>
-static T getResult(lua_State* state);
+template<typename T> static T getResult(lua_State* state);
 
 LuaScript::LuaScript() {
 	state = luaL_newstate();
@@ -16,7 +16,7 @@ LuaScript::~LuaScript() {
 
 void LuaScript::ExecuteFile(const std::string file) {
 	if (luaL_dofile(state, file.c_str())) {
-		throw LuaException(lua_tostring(state, -1));
+		throw LuaException(file, lua_tostring(state, -1));
 	}
 }
 
@@ -47,32 +47,15 @@ static void applyArg(lua_State* state, const std::string item) { lua_pushstring(
 static void applyArg(lua_State* state, const char* item) { lua_pushstring(state, item); }
 static void applyArg(lua_State* state, const bool item) { lua_pushboolean(state, item ? 1 : 0); }
 
-template<>
-int getResult(lua_State* state) {
-    return lua_tointeger(state, -1);
-}
+template<> int getResult(lua_State* state) { return lua_tointeger(state, -1); }
+template<> float getResult(lua_State* state) { return lua_tonumber(state, -1); }
+template<> double getResult(lua_State* state) { return lua_tonumber(state, -1); }
+template<> const char* getResult(lua_State* state) { return lua_tostring(state, -1); }
+template<> std::string getResult(lua_State* state) { return std::string(lua_tostring(state, -1)); }
+template<> bool getResult(lua_State* state) { return lua_toboolean(state, -1) != 0; }
 
-template<>
-float getResult(lua_State* state) {
-    return lua_tonumber(state, -1);
-}
-
-template<>
-double getResult(lua_State* state) {
-    return lua_tonumber(state, -1);
-}
-
-template<>
-const char* getResult(lua_State* state) {
-    return lua_tostring(state, -1);
-}
-
-template<>
-std::string getResult(lua_State* state) {
-    return std::string(lua_tostring(state, -1));
-}
-
-template<>
-bool getResult(lua_State* state) {
-    return lua_toboolean(state, -1) != 0;
+template<typename T>
+void LuaScript::bindFunction(const std::string fname, T* function) {
+	lua_pushcfunction(state, function);
+	lua_setglobal(state, fname.c_str());
 }

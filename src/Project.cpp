@@ -33,8 +33,9 @@ Player* Project::CreatePlayer(const int w, const int h) {
 
 	std::string shaderCombined = LoadAllShaders();
 	player.SetShader(shaderCombined);
-
 	player.MakeUniforms();
+
+	LoadAllScripts();
 
 	return &player;
 }
@@ -50,4 +51,10 @@ std::string Project::LoadAllShaders() {
 	}
 
 	return shaderSrc;
+}
+
+void Project::LoadAllScripts() {
+	for (auto& filename : info.scripts) {
+		player.script.ExecuteFile(basepath + "/" + filename);
+	}
 }
