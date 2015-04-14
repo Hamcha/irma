@@ -12,10 +12,10 @@ public:
 	LuaScript();
 	~LuaScript();
 
-	void ExecuteFile(std::string file);
+	void ExecuteFile(const std::string file);
 
 	template<typename R, typename ...T>
-	R callFunction(std::string name, T...) {}
+	R callFunction(const std::string, const T...);
 };
 
 class LuaException : public std::runtime_error {
