@@ -5,7 +5,12 @@
 #include <SDL.h>
 #include <stdexcept>
 #include <string>
+#include <vector>
 #include "Shader.h"
+
+typedef class Player Player;
+
+#include "LuaScript.h"
 
 class Player {
 private:
@@ -18,6 +23,7 @@ protected:
 
 public:
 	Shader userShader, appShader;
+	std::vector<LuaScript> scripts;
 
 	~Player();
 	void Init(const int w, const int h, const char* name);

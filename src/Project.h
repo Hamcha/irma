@@ -16,6 +16,7 @@ class Project {
 private:
 	std::string basepath;
 	std::string LoadAllShaders();
+	std::string LoadAllScripts();
 
 public:
 	ProjectInfo info;

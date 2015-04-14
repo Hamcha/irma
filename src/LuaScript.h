@@ -5,6 +5,10 @@
 #include <string>
 #include <stdexcept>
 
+typedef class LuaScript LuaScript;
+
+#include "Player.h"
+
 class LuaScript {
 private:
 	lua_State* state;
@@ -13,6 +17,7 @@ public:
 	~LuaScript();
 
 	void ExecuteFile(const std::string file);
+	void BindPlayer(Player* player);
 
 	template<typename R, typename ...T>
 	R callFunction(const std::string, const T...);
