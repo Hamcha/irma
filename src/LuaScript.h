@@ -3,6 +3,7 @@
 #include <lua.hpp>
 #include <string>
 #include <stdexcept>
+#include <functional>
 
 class LuaScript {
 private:
@@ -16,8 +17,8 @@ public:
 	template<typename R, typename ...T>
 	R callFunction(const std::string, const T...);
 
-	template<typename T>
-	void bindFunction(const std::string, T* function);
+	template<typename R, typename ...Args>
+	void bindFunction(const std::string, const std::function<R(Args...)>& function);
 };
 
 class LuaException : public std::runtime_error {

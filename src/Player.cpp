@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "FileUtils.h"
+#include "LuaFunctions.h"
 
 const GLchar appShaderSrc[] =
 {
@@ -39,9 +40,13 @@ void Player::Init(const int w, const int h, const char* name) {
 	// Generate render texture
 	glGenTextures(1, &texture);
 
+	// Create shaders
 	userShader.Init();
 	appShader.Init();
 	appShader.SetShader(std::string(appShaderSrc), "appShader");
+
+	// Bind LUA functions
+	bindLuaFunctions(&script, this);
 }
 
 void Player::SetShader(const std::string shaderSrc) {

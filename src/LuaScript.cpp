@@ -1,7 +1,6 @@
 #include "LuaScript.h"
-#include <functional>
 
-template<typename T> static T getResult(lua_State* state);
+template<typename T> static T getResult(lua_State* state, int index);
 
 LuaScript::LuaScript() {
 	state = luaL_newstate();
@@ -27,7 +26,7 @@ R LuaScript::callFunction(const std::string name, const T... args) {
 	applyAllArgs(state, args...);
 	lua_pcall(state, argCount, 1, 0);
 
-	R result = getResult<R>(state);
+	R result = getResult<R>(state, -1);
 	lua_pop(state, 1);
 	return result;
 }
@@ -47,15 +46,33 @@ static void applyArg(lua_State* state, const std::string item) { lua_pushstring(
 static void applyArg(lua_State* state, const char* item) { lua_pushstring(state, item); }
 static void applyArg(lua_State* state, const bool item) { lua_pushboolean(state, item ? 1 : 0); }
 
-template<> int getResult(lua_State* state) { return lua_tointeger(state, -1); }
-template<> float getResult(lua_State* state) { return lua_tonumber(state, -1); }
-template<> double getResult(lua_State* state) { return lua_tonumber(state, -1); }
-template<> const char* getResult(lua_State* state) { return lua_tostring(state, -1); }
-template<> std::string getResult(lua_State* state) { return std::string(lua_tostring(state, -1)); }
-template<> bool getResult(lua_State* state) { return lua_toboolean(state, -1) != 0; }
+template<typename R, typename ...Args>
+static std::function<R()> getAllArgs(lua_State* state, std::function<R(Args...)> function, const int item, const int limit) {
+	auto bfunc = std::bind(function, getResult(state, item));
+	if (limit == item) {
+		return bfunc;
+	}
+	return getAllArgs(state, bfunc, item+1, limit);
+}
 
-template<typename T>
-void LuaScript::bindFunction(const std::string fname, T* function) {
-	lua_pushcfunction(state, function);
+template<> int getResult(lua_State* state, int index) { return lua_tointeger(state, index); }
+template<> float getResult(lua_State* state, int index) { return (float)lua_tonumber(state, index); }
+template<> double getResult(lua_State* state, int index) { return lua_tonumber(state, index); }
+template<> const char* getResult(lua_State* state, int index) { return lua_tostring(state, index); }
+template<> std::string getResult(lua_State* state, int index) { return std::string(lua_tostring(state, index)); }
+template<> bool getResult(lua_State* state, int index) { return lua_toboolean(state, index) != 0; }
+
+template<typename R, typename ...Args>
+static int ctolua(std::function<R(Args...)> function, lua_State* state) {
+	auto func = getAllArgs(state, function, 1, lua_gettop(state));
+	R result = func();
+	applyArg(state, result);
+	return 1;
+}
+
+template<typename R, typename ...Args>
+void LuaScript::bindFunction(const std::string fname, const std::function<R(Args...)>& function) {
+	auto func = std::bind(ctolua, function);
+	lua_pushcfunction(state, func);
 	lua_setglobal(state, fname.c_str());
 }
