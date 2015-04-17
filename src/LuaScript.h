@@ -15,10 +15,10 @@ public:
 	void ExecuteFile(const std::string file);
 
 	template<typename R, typename ...T>
-	R callFunction(const std::string, const T...);
+	R CallFunction(const std::string, const T...);
 
 	template<typename R, typename ...Args>
-	void bindFunction(const std::string, const std::function<R(Args...)>& function);
+	void BindFunction(const std::string, const std::function<R(Args...)>);
 };
 
 class LuaException : public std::runtime_error {

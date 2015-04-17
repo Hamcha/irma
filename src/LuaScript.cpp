@@ -20,7 +20,7 @@ void LuaScript::ExecuteFile(const std::string file) {
 }
 
 template<typename R, typename ...T>
-R LuaScript::callFunction(const std::string name, const T... args) {
+R LuaScript::CallFunction(const std::string name, const T... args) {
 	lua_getglobal(state, name.c_str());
 	int argCount = sizeof...(args);
 	applyAllArgs(state, args...);
@@ -71,8 +71,8 @@ static int ctolua(std::function<R(Args...)> function, lua_State* state) {
 }
 
 template<typename R, typename ...Args>
-void LuaScript::bindFunction(const std::string fname, const std::function<R(Args...)>& function) {
-	auto func = std::bind(ctolua, function);
-	lua_pushcfunction(state, func);
-	lua_setglobal(state, fname.c_str());
+void LuaScript::BindFunction(const std::string fname, const std::function<R(Args...)> function) {
+	//auto func = function;//std::bind(ctolua, function);
+	//lua_pushcfunction(state, func);
+	//lua_setglobal(state, fname.c_str());
 }

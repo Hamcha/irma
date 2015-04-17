@@ -14,15 +14,17 @@ void _lua_SetUniform(Player* player, const char* name, T value) {
 }
 
 void bindLuaFunctions(LuaScript* script, Player* player) {
+	script->BindFunction("test", std::function<int(int)>([](int a) { return a * 2; }));
+
 	std::function<void(const char*, float)> SetUniformFloat = std::bind(_lua_SetUniform<float>, player,
 		std::placeholders::_1, std::placeholders::_2);
-	script->bindFunction("SetFloat", SetUniformFloat);
-
+	script->BindFunction("SetFloat", SetUniformFloat);
+	/*
 	std::function<void(const char*, double)> SetUniformDouble = std::bind(_lua_SetUniform<double>, player,
 		std::placeholders::_1, std::placeholders::_2);
 	script->bindFunction("SetDouble", SetUniformDouble);
 
 	std::function<void(const char*, int)> SetUniformInt = std::bind(_lua_SetUniform<int>, player,
 		std::placeholders::_1, std::placeholders::_2);
-	script->bindFunction("SetInt", SetUniformInt);
+	script->bindFunction("SetInt", SetUniformInt);*/
 }
