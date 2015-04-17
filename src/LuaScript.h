@@ -18,8 +18,9 @@ public:
 	R CallFunction(const std::string, const T...);
 
 	template<typename R, typename ...Args>
-	void BindFunction(const std::string, const std::function<R(Args...)>);
+	void BindFunction(const std::string fname, const std::function<R(Args...)>* function) {}
 };
+
 
 class LuaException : public std::runtime_error {
 public:

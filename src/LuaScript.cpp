@@ -69,10 +69,3 @@ static int ctolua(std::function<R(Args...)> function, lua_State* state) {
 	applyArg(state, result);
 	return 1;
 }
-
-template<typename R, typename ...Args>
-void LuaScript::BindFunction(const std::string fname, const std::function<R(Args...)> function) {
-	//auto func = function;//std::bind(ctolua, function);
-	//lua_pushcfunction(state, func);
-	//lua_setglobal(state, fname.c_str());
-}
