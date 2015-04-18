@@ -17,12 +17,12 @@ void LuaScript::ExecuteFile(const std::string file) {
 	}
 }
 
-void applyArg(lua_State* state, const int item) { lua_pushnumber(state, item); }
-void applyArg(lua_State* state, const float item) { lua_pushnumber(state, item); }
-void applyArg(lua_State* state, const double item) { lua_pushnumber(state, item); }
-void applyArg(lua_State* state, const std::string item) { lua_pushstring(state, item.c_str()); }
-void applyArg(lua_State* state, const char* item) { lua_pushstring(state, item); }
-void applyArg(lua_State* state, const bool item) { lua_pushboolean(state, item ? 1 : 0); }
+template<> void applyArg(lua_State* state, const int item) { lua_pushnumber(state, item); }
+template<> void applyArg(lua_State* state, const float item) { lua_pushnumber(state, item); }
+template<> void applyArg(lua_State* state, const double item) { lua_pushnumber(state, item); }
+template<> void applyArg(lua_State* state, const std::string item) { lua_pushstring(state, item.c_str()); }
+template<> void applyArg(lua_State* state, const char* item) { lua_pushstring(state, item); }
+template<> void applyArg(lua_State* state, const bool item) { lua_pushboolean(state, item ? 1 : 0); }
 
 template<> int getResult(lua_State* state, int index) { return lua_tointeger(state, index); }
 template<> float getResult(lua_State* state, int index) { return (float)lua_tonumber(state, index); }

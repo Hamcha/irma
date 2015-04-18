@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[]) {
 	// Player properties
-	const int w = 800, h = 600;
+	const int w = 1280, h = 720;
 
 	// OpenGL context attributes
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);

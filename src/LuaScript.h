@@ -5,12 +5,8 @@
 #include <stdexcept>
 #include <functional>
 
-void applyArg(lua_State*, const int);
-void applyArg(lua_State*, const float);
-void applyArg(lua_State*, const double);
-void applyArg(lua_State*, const std::string);
-void applyArg(lua_State*, const char*);
-void applyArg(lua_State*, const bool);
+template<typename R>
+void applyArg(lua_State*, const R);
 
 template<typename R>
 R getResult(lua_State* state, int index);
