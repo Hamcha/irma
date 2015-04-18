@@ -23,6 +23,20 @@ int main(int argc, char *argv[]) {
 	try {
 		project.LoadDirectory("projects/example");
 		player = project.CreatePlayer(w, h);
+
+		SDL_Event event;
+		bool running = true;
+		while (running) {
+			if (SDL_PollEvent(&event)) {
+				switch (event.type) {
+				case SDL_QUIT:
+					running = false;
+					break;
+				}
+			}
+
+			player->Loop();
+		}
 	} catch (const PlayerException& e) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Player initialization error", e.what(), NULL);
 		SDL_Quit();
@@ -34,24 +48,11 @@ int main(int argc, char *argv[]) {
 		return 1;
 	} catch (const LuaException& e) {
 		std::string errname = "Lua error - " + e.file;
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, errname.c_str(), e.what(), NULL);
+		std::string errmsg = e.file + ": " + e.what();
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, errname.c_str(), errmsg.c_str(), NULL);
 		SDL_Quit();
 		return 1;
-	}
-
-	SDL_Event event;
-	bool running = true;
-	while (running) {
-		if (SDL_PollEvent(&event)) {
-			switch (event.type) {
-			case SDL_QUIT:
-				running = false;
-				break;
-			}
-		}
-
-		player->Loop();
-	}
+	}	
 
 	SDL_Quit();
 	return 0;

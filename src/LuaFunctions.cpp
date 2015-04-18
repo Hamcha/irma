@@ -24,6 +24,4 @@ void bindLuaFunctions(LuaScript* script, Player* player) {
 	std::function<void(const char*, int)> SetUniformInt = std::bind(_lua_SetUniform<int>, player,
 		std::placeholders::_1, std::placeholders::_2);
 	script->BindFunction("SetInt", SetUniformInt);
-
-	script->BindFunction("AddNum", std::function<int(int, int)>([](int a, int b) { return a + b; }));
 }

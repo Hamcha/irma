@@ -75,6 +75,11 @@ void Player::Loop() {
 
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	// Call update function (if exists) on the script
+	if (script.GlobalExists("update")) {
+		script.CallFunction("update");
+	}
+
 	// Render shaders
 	userShader.Render(texture, width, height);
 	appShader.Draw();
